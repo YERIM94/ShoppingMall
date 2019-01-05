@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="main">
+
+	<!-- 로그인 정보 조회 -->
+	<select id="selectLogin" parameterType="net.e4net.s1.main.vo.RegisterDVO" resultType="net.e4net.s1.main.vo.LoginDVO">
+		SELECT  USER_ID,
+		        NAME,
+		        GRP_CL,
+		        USER_STATUS,
+		        LOGIN_PASSWD,
+		        FAIL_COUNT,
+		        LOGIN_DT,
+		        LOGIN_IP
+		FROM    EIWAF_LOGIN
+		WHERE   USER_ID =  #{usr_id}
+	</select>
+
+	<!-- 로그인 정보 업데이트 -->
+	<update id="updateLogin" parameterType="net.e4net.s1.main.vo.LoginDVO">
+		UPDATE  EIWAF_LOGIN
+		SET
+		    USER_STATUS   = #{user_status}
+		    , FAIL_COUNT  = #{fail_count}
+		    , login_dt = (select TO_CHAR(SYSDATE, 'YYYY-MM-DD') from dual)
+		    , LOGIN_IP = #{login_ip}
+		WHERE USER_ID = #{user_id}
+	</update>
+	
+	<!-- 로그인 한 아이디 정보 조회-->
+	<select id="selectLoginInfo" parameterType="net.e4net.s1.main.vo.LoginPVO" resultType="net.e4net.s1.main.vo.RegisterDVO">
+		SELECT  USR_ID,
+		        usr_nm,
+		        usr_cls,
+		        usr_pwd
+		FROM    tb_mem
+		WHERE   USR_ID = #{user_id}
+	</select>
+	
+	<!-- 로그인 한 아이디 정보 조회(마이페이지용)-->
+	<select id="selectLoginInfoAll" parameterType="String" resultType="net.e4net.s1.main.vo.RegisterDVO">
+		SELECT  *
+		FROM    tb_mem
+		WHERE   USR_ID = #{user_id}
+	</select>
+
+	<!-- LoginDVO에 로그인 정보 저장 -->
+	<insert id="insertLoginInfo" parameterType="net.e4net.s1.main.vo.LoginDVO">
+		insert into eiwaf_login(USER_ID, NAME, GRP_CL, LOGIN_PASSWD)
+		values (#{user_id}, #{name}, #{grp_cl}, #{login_passwd})
+	</insert>
+
+	<!-- 회원가입 -->
+	<insert id="insertMem" parameterType="net.e4net.s1.main.vo.RegisterDVO">
+		insert into tb_mem(usr_no,usr_cls,usr_id,usr_pwd,usr_nm,usr_email,hp_ddd_no,hp_no,zip_addr,zip_cd,reg_dtm)
+		values (usr_no_sequence.nextval,#{usr_cls},#{usr_id},#{usr_pwd},#{usr_nm},#{usr_email},#{hp_ddd_no},#{hp_no},#{zip_addr},#{zip_cd},#{reg_dtm})
+	</insert>
+
+</mapper>

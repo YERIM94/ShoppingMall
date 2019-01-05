@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop">
+
+	<!--로그인 정보 조회  -->
+	<select id="selectLogin" parameterType="net.e4net.s1.main.vo.RegisterDVO" resultType="net.e4net.s1.main.vo.LoginDVO">
+		SELECT  USER_ID,
+		        NAME,
+		        GRP_CL,
+		        USER_STATUS,
+		        LOGIN_PASSWD,
+		        FAIL_COUNT,
+		        LOGIN_DT,
+		        LOGIN_IP
+		FROM    EIWAF_LOGIN
+		WHERE   USER_ID =  #{usr_id}
+	</select>
+	
+	<!-- 상품등록 -->
+	<insert id="insertGoods" parameterType="net.e4net.s1.shop.vo.goodsRegisterDVO">
+		insert into tb_goods(selr_usr_no, gds_no, catg_no, gds_nm, gds_amt, gds_qtt, gds_cls_dt, gds_shpp_cost, gds_desc, buy_yn, buy_cncl_dt, reg_dtm)
+		values ('22',goods_no_sequence.nextval, #{catg_no}, #{gds_nm}, #{gds_amt}, #{gds_qtt}, #{buy_cncl_dt}, #{gds_shpp_cost}, #{gds_desc}, 'y', #{buy_cncl_dt}, #{reg_dtm})
+	</insert>
+	
+	<!-- 상품일련번호 생성 -->
+	<insert id="insertGoodsSno" parameterType="net.e4net.s1.shop.vo.goodsRegisterDVO">
+		insert into tb_goods(gds_sno)
+		values (select reg_dtm||selr_usr_no||'-'||catg_no||gds_no
+				from tb_goods
+				where gds_no = #{gds_no})
+	</insert>
+	
+</mapper>

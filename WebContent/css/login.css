@@ -1,0 +1,9 @@
+#btn_group{
+	float: right;
+	display: block;
+	padding-top:10px;
+}
+
+#btn_group a{
+	float: right;
+}
